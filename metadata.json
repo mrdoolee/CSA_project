@@ -1,0 +1,6 @@
+{
+  "name": "Classroom Seating Arrangement",
+  "description": "CRA(교실 관계 분석) SNA 데이터 기반 학급 자리배치 및 교우관계 개선 시스템",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
