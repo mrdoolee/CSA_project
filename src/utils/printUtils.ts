@@ -134,7 +134,7 @@ export function printSeatingChart(options: {
         .header h1 { font-size: 20px; margin: 0 0 4px 0; font-weight: 900; color: #0f172a; }
         .header p { font-size: 11.5px; margin: 0; color: #475569; font-weight: 600; white-space: pre-line; line-height: 1.35; }
         .board { background: #f1f5f9; border: 2px solid #334155; border-radius: 8px; text-align: center; padding: 5px; font-weight: 800; font-size: 11.5px; letter-spacing: 2px; color: #0f172a; margin: 0 0 8px 0; width: 100%; }
-        .content-layout { display: flex; align-items: center; justify-content: center; gap: 16px; width: 100%; margin: 6px 0; }
+        .content-layout { display: flex; align-items: flex-start; justify-content: center; gap: 16px; width: 100%; margin: 6px 0; }
         .grid-wrapper { display: flex; flex-direction: column; align-items: center; gap: 5px; flex-shrink: 0; }
         .row-container { display: flex; align-items: center; justify-content: center; }
         .row-cells { display: flex; align-items: center; gap: 6px; }

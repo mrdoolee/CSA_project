@@ -421,12 +421,12 @@ export const ResultView: React.FC<ResultViewProps> = ({
             </div>
 
             {/* Print Layout Area: Optional Student List Table + Seating Grid */}
-            <div className={`flex flex-col md:flex-row items-center md:items-center justify-center gap-6 py-2 sm:py-3 w-full overflow-x-auto ${
+            <div className={`flex flex-col md:flex-row items-center md:items-start justify-center gap-6 py-2 sm:py-3 w-full overflow-x-auto ${
               printListPosition === 'right' ? 'md:flex-row-reverse' : ''
             }`}>
               {/* Optional Student List Table Preview */}
               {printListPosition !== 'none' && (
-                <div className="w-36 border-2 border-slate-800 rounded-2xl p-2.5 bg-slate-50 shrink-0 self-center text-xs font-sans shadow-2xs">
+                <div className="w-36 border-2 border-slate-800 rounded-2xl p-2.5 bg-slate-50 shrink-0 self-center md:self-start text-xs font-sans shadow-2xs">
                   <div className="font-black text-slate-900 text-center border-b-2 border-slate-800 pb-1 mb-1.5 text-xs">
                     학생 명단
                   </div>

@@ -180,7 +180,7 @@ export const ConstraintSetup: React.FC<ConstraintSetupProps> = ({
                 onChange={(e) => setSelectedStudentForFix(e.target.value)}
                 className="w-full px-3.5 py-2.5 text-xs font-bold bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500/20"
               >
-                <option value="">-- 학생 선택 (시력 보호 / 특이사항 학생) --</option>
+                <option value="">-- 학생 선택 (특이사항) --</option>
                 {students.map((s) => (
                   <option key={s.id} value={s.id}>
                     {s.studentNumber ? `${s.studentNumber} ` : ''}
