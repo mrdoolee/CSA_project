@@ -250,9 +250,11 @@ export const RestoredSeatingModal: React.FC<RestoredSeatingModalProps> = ({
                                     <div className="text-sm font-black text-white truncate print:text-black">
                                       {student.name}
                                     </div>
-                                    <div className="text-[10px] text-slate-400 print:text-slate-600 font-semibold mt-0.5">
-                                      모둠 {desk.groupNumber || 1}
-                                    </div>
+                                    {desk.podId !== undefined && (
+                                      <div className="text-[10px] text-slate-400 print:text-slate-600 font-semibold mt-0.5">
+                                        모둠 {desk.podId + 1}
+                                      </div>
+                                    )}
                                   </div>
                                 ) : (
                                   <div className="text-[10px] text-slate-600 print:text-slate-400 text-center my-auto">

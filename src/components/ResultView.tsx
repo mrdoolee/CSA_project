@@ -50,6 +50,7 @@ interface ResultViewProps {
   onUpdateCandidate: (candidateId: string, updatedCandidate: SeatingResult) => void;
   raffleCandidateIds: string[];
   onToggleRaffleCandidate: (candidateId: string) => void;
+  pastAssignments: Record<string, string | null>[];
 }
 
 export const ResultView: React.FC<ResultViewProps> = ({
@@ -69,6 +70,7 @@ export const ResultView: React.FC<ResultViewProps> = ({
   onUpdateCandidate,
   raffleCandidateIds,
   onToggleRaffleCandidate,
+  pastAssignments,
 }) => {
   const currentCandidate =
     candidates.find((c) => c.id === selectedCandidateId) || candidates[0];
@@ -102,16 +104,16 @@ export const ResultView: React.FC<ResultViewProps> = ({
     if (e) e.stopPropagation();
     let newAssignments: Record<string, string | null>;
     if (candId === 'opt_1') {
-      newAssignments = generateSingleArrangement(desks, students, constraints, 'expansion');
+      newAssignments = generateSingleArrangement(desks, students, constraints, 'expansion', pastAssignments);
     } else if (candId === 'opt_2') {
-      newAssignments = generateSingleArrangement(desks, students, constraints, 'balanced');
+      newAssignments = generateSingleArrangement(desks, students, constraints, 'balanced', pastAssignments);
     } else if (candId === 'opt_3') {
-      newAssignments = generateSingleArrangement(desks, students, constraints, 'intimacy');
+      newAssignments = generateSingleArrangement(desks, students, constraints, 'intimacy', pastAssignments);
     } else {
-      newAssignments = generateRandomArrangement(desks, students, constraints);
+      newAssignments = generateRandomArrangement(desks, students, constraints, pastAssignments);
     }
 
-    const newMetrics = evaluateArrangement(newAssignments, desks, students, constraints);
+    const newMetrics = evaluateArrangement(newAssignments, desks, students, constraints, pastAssignments);
     const existingCand = candidates.find((c) => c.id === candId) || currentCandidate;
 
     const updatedCand: SeatingResult = {
@@ -230,8 +232,8 @@ export const ResultView: React.FC<ResultViewProps> = ({
   // Candidate 4 Pure Random Refresh Handler
   const handleRefreshCandidate4 = (e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
-    const newRandomAssignments = generateRandomArrangement(desks, students, constraints);
-    const newMetrics = evaluateArrangement(newRandomAssignments, desks, students, constraints);
+    const newRandomAssignments = generateRandomArrangement(desks, students, constraints, pastAssignments);
+    const newMetrics = evaluateArrangement(newRandomAssignments, desks, students, constraints, pastAssignments);
 
     const cand4 = candidates.find((c) => c.id === 'opt_4') || currentCandidate;
 
@@ -553,10 +555,14 @@ export const ResultView: React.FC<ResultViewProps> = ({
 
         {/* Candidate Cards Grid (Horizontal Layout) */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {candidates.map((cand, idx) => {
+          {candidates.map((cand) => {
             const isSelected = cand.id === selectedCandidateId;
             const isRandomCand = cand.id === 'opt_4';
             const isRaffleIncluded = raffleCandidateIds.includes(cand.id);
+            // Derive the badge number from the candidate's own id (opt_N) rather than its
+            // array position, so it stays consistent with the title even when opt_4 is the
+            // only candidate present (no CRA data uploaded).
+            const candNumber = parseInt(cand.id.replace('opt_', ''), 10) || 1;
 
             return (
               <div
@@ -577,7 +583,7 @@ export const ResultView: React.FC<ResultViewProps> = ({
                           : 'bg-indigo-200 text-indigo-900'
                       }`}
                     >
-                      후보 {idx + 1} {isRandomCand ? '(랜덤/수동)' : ''}
+                      후보 {candNumber} {isRandomCand ? '(랜덤/수동)' : ''}
                     </span>
 
                     {isSelected ? (

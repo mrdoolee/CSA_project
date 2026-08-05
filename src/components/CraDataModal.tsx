@@ -152,6 +152,13 @@ export const CraDataModal: React.FC<CraDataModalProps> = ({
               assignments: jsonResult.assignments,
               desks: jsonResult.desks,
               dimensions: jsonResult.dimensions,
+              metrics: jsonResult.metrics || {
+                expansionScore: 90,
+                intimacyDispersionScore: 90,
+                influenceBalanceScore: 90,
+                constraintSatisfactionScore: 100,
+                overallScore: 90,
+              },
             });
           }
 
@@ -518,6 +525,18 @@ export const CraDataModal: React.FC<CraDataModalProps> = ({
         const expMed = findCol('4_교우관계', '중재자');
         const expGrp = findCol('4_교우관계', '소집단');
 
+        // Detect which '소집단' (group) columns could not be recognized in the header row.
+        // These columns drive intimacyGroup / expansionGroup, which the seating algorithm
+        // relies on to score clique dispersion and peer-expansion — if missing, every
+        // student silently falls back to the same default group and those scores become
+        // meaningless without any visible warning to the teacher.
+        const missingGroupColumns: string[] = [];
+        if (totGrp === -1) missingGroupColumns.push('[0_전체_통합] 소집단');
+        if (intGrp === -1) missingGroupColumns.push('[1_정서적_친밀감] 소집단');
+        if (coopGrp === -1) missingGroupColumns.push('[2_기능적_협력] 소집단');
+        if (infGrp === -1) missingGroupColumns.push('[3_사회적_영향력] 소집단');
+        if (expGrp === -1) missingGroupColumns.push('[4_교우관계_확장] 소집단');
+
         let matchedCount = 0;
         let transferredOutCount = 0;
         const updatedStudents = [...students];
@@ -618,6 +637,10 @@ export const CraDataModal: React.FC<CraDataModalProps> = ({
         }
         if (transferredOutCount > 0) {
           reportMsg += `⚠️ 전출 제외 학생 (${transferredOutCount}명): 과거 CRA 시트에는 존재하나 현재 기본명단에 없어 자리배치 대상에서 자동 제외되었습니다.\n`;
+        }
+        if (missingGroupColumns.length > 0) {
+          reportMsg += `\n🚨 소집단 컬럼 인식 실패: ${missingGroupColumns.join(', ')}\n`;
+          reportMsg += `→ 위 항목은 컬럼명을 인식하지 못해 전체 학생이 기본값(모둠_1)으로 처리되었습니다. 이 상태에서는 '친밀집단 분산'/'교우관계 확장' 점수가 실제 관계망을 반영하지 못하니, CRA 데이터 시트의 컬럼명을 공식 양식과 대조해 다시 업로드해 주세요.\n`;
         }
 
         alert(reportMsg);

@@ -269,6 +269,7 @@ export default function App() {
               onSaveToHistory={handleSaveToHistory}
               onUpdateCandidateAssignments={handleUpdateCandidateAssignments}
               onUpdateCandidate={handleUpdateCandidate}
+              pastAssignments={savedResults.map((r) => r.assignments)}
             />
           )}
 

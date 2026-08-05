@@ -162,8 +162,6 @@ export function evaluateArrangement(
   constraintSatisfactionScore: number;
   overallScore: number;
 } {
-  const activeDesks = desks.filter((d) => !d.disabled);
-  const studentMap = new Map<string, CraStudent>(students.map((s) => [s.id, s]));
   const deskMap = new Map<string, DeskPosition>(desks.map((d) => [d.id, d]));
 
   // Inverse lookup: studentId -> deskPosition
@@ -349,12 +347,18 @@ export function evaluateArrangement(
     expansionWeight: 35,
     influenceWeight: 30,
   };
-  const sumWeights = (weights.intimacyWeight + weights.expansionWeight + weights.influenceWeight) || 100;
+  // If the teacher drags every weight slider down to 0, treat it as "no preference"
+  // and fall back to equal weighting instead of collapsing the CRA score to 0.
+  const rawSumWeights = weights.intimacyWeight + weights.expansionWeight + weights.influenceWeight;
+  const effectiveWeights = rawSumWeights === 0
+    ? { intimacyWeight: 1, expansionWeight: 1, influenceWeight: 1 }
+    : weights;
+  const sumWeights = rawSumWeights === 0 ? 3 : rawSumWeights;
 
   const craWeightedScore =
-    (intimacyDispersionScore * weights.intimacyWeight +
-      expansionScore * weights.expansionWeight +
-      influenceBalanceScore * weights.influenceWeight) /
+    (intimacyDispersionScore * effectiveWeights.intimacyWeight +
+      expansionScore * effectiveWeights.expansionWeight +
+      influenceBalanceScore * effectiveWeights.influenceWeight) /
     sumWeights;
 
   // 30% Constraint Satisfaction + 70% CRA Weighted Score
@@ -444,6 +448,9 @@ export function generateCandidateArrangements(
 
     const metrics = evaluateArrangement(assignments, desks, students, constraints, pastAssignments);
 
+    const opt2PresetAssignments = generateSingleArrangement(desks, students, constraints, 'expansion', pastAssignments);
+    const opt3PresetAssignments = generateSingleArrangement(desks, students, constraints, 'intimacy', pastAssignments);
+
     return [
       {
         id: 'opt_1',
@@ -460,8 +467,8 @@ export function generateCandidateArrangements(
         title: '후보 2: 교우관계 확장 최우선형',
         description: '새로운 친구관계를 지속적으로 형성할 수 있는 균형안입니다.',
         date: new Date().toLocaleDateString('ko-KR'),
-        assignments: generateSingleArrangement(desks, students, constraints, 'expansion', pastAssignments),
-        metrics: evaluateArrangement(assignments, desks, students, constraints, pastAssignments),
+        assignments: opt2PresetAssignments,
+        metrics: evaluateArrangement(opt2PresetAssignments, desks, students, constraints, pastAssignments),
         desks,
         dimensions,
       },
@@ -470,8 +477,8 @@ export function generateCandidateArrangements(
         title: '후보 3: 친밀감 분산 & 학급 통합형',
         description: '기존의 단짝 소집단을 균등히 분산시켜 반 전체 분위기를 조율합니다.',
         date: new Date().toLocaleDateString('ko-KR'),
-        assignments: generateSingleArrangement(desks, students, constraints, 'intimacy', pastAssignments),
-        metrics: evaluateArrangement(assignments, desks, students, constraints, pastAssignments),
+        assignments: opt3PresetAssignments,
+        metrics: evaluateArrangement(opt3PresetAssignments, desks, students, constraints, pastAssignments),
         desks,
         dimensions,
       },
