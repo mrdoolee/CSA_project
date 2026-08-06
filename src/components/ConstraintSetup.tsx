@@ -417,6 +417,29 @@ export const ConstraintSetup: React.FC<ConstraintSetupProps> = ({
 
               <button
                 type="button"
+                onClick={() => setConstraints({ ...constraints, genderRule: 'no_male_cross_adjacent' })}
+                className={`w-full p-3.5 rounded-2xl border text-left transition-all flex items-center justify-between cursor-pointer ${
+                  constraints.genderRule === 'no_male_cross_adjacent'
+                    ? 'bg-indigo-50 border-indigo-500 text-indigo-900 ring-2 ring-indigo-500/20'
+                    : 'bg-slate-50 border-slate-200 hover:bg-slate-100 text-slate-700'
+                }`}
+              >
+                <div>
+                  <div className="font-bold text-xs">🚹 남학생 십자 인접 금지 배치</div>
+                  <div className="text-[11px] text-slate-500 mt-0.5">
+                    3×3 영역 중앙(5번)이 남학생이면 상하좌우(2,4,6,8번)에는 남학생 배치 금지
+                  </div>
+                </div>
+                <input
+                  type="radio"
+                  checked={constraints.genderRule === 'no_male_cross_adjacent'}
+                  onChange={() => {}}
+                  className="accent-indigo-600"
+                />
+              </button>
+
+              <button
+                type="button"
                 onClick={() => setConstraints({ ...constraints, genderRule: 'even_distribution' })}
                 className={`w-full p-3.5 rounded-2xl border text-left transition-all flex items-center justify-between cursor-pointer ${
                   constraints.genderRule === 'even_distribution'

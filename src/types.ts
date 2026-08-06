@@ -59,7 +59,7 @@ export interface SavedLayoutPreset {
   desks: DeskPosition[];
 }
 
-export type GenderRule = 'mixed_pairs' | 'even_distribution' | 'random' | 'balanced_group';
+export type GenderRule = 'mixed_pairs' | 'no_male_cross_adjacent' | 'even_distribution' | 'random' | 'balanced_group';
 
 export interface FixedSeatConstraint {
   studentId: string;

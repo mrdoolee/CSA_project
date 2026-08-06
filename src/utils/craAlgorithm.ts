@@ -147,6 +147,16 @@ export function areDesksNeighbors(d1: DeskPosition, d2: DeskPosition): boolean {
 }
 
 /**
+ * Checks if two desks are cross-adjacent (up/down/left/right only, no diagonals) —
+ * i.e. positions 2/4/6/8 relative to a 3x3 block centered on position 5.
+ */
+export function areDesksCrossAdjacent(d1: DeskPosition, d2: DeskPosition): boolean {
+  const rowDiff = Math.abs(d1.row - d2.row);
+  const colDiff = Math.abs(d1.col - d2.col);
+  return (rowDiff === 1 && colDiff === 0) || (rowDiff === 0 && colDiff === 1);
+}
+
+/**
  * Evaluates a candidate seating arrangement against CRA principles & constraints
  */
 export function evaluateArrangement(
@@ -198,6 +208,25 @@ export function evaluateArrangement(
       }
     }
   });
+
+  // Gender rule: no male student cross-adjacent (up/down/left/right) to another male student
+  if (constraints.genderRule === 'no_male_cross_adjacent') {
+    const studentMap = new Map<string, CraStudent>(students.map((s) => [s.id, s]));
+    students.forEach((s) => {
+      if (s.gender !== 'M') return;
+      const desk = studentDeskMap.get(s.id);
+      if (!desk) return;
+      totalConstraints++;
+      const hasMaleCrossNeighbor = desks.some((otherDesk) => {
+        if (otherDesk.id === desk.id || otherDesk.disabled) return false;
+        if (!areDesksCrossAdjacent(desk, otherDesk)) return false;
+        const otherStudentId = assignments[otherDesk.id];
+        if (!otherStudentId) return false;
+        return studentMap.get(otherStudentId)?.gender === 'M';
+      });
+      if (hasMaleCrossNeighbor) constraintViolations++;
+    });
+  }
 
   // Past neighbors check (via pastSeatInfo string or pastAssignments history)
   if (constraints.avoidPastNeighbors) {
