@@ -42,6 +42,15 @@ export default function App() {
     'cra' | 'layout' | 'constraints' | 'result' | 'raffleAndVote'
   >('cra');
 
+  // 2~4단계는 학생 데이터가 최소 1명 이상 등록되어야 접근 가능
+  const handleSetActiveTab = (tab: 'cra' | 'layout' | 'constraints' | 'result' | 'raffleAndVote') => {
+    if (tab !== 'cra' && students.length === 0) {
+      alert('먼저 1단계에서 학생 데이터를 등록해 주세요 (샘플 데이터 또는 실제 명단 업로드).');
+      return;
+    }
+    setActiveTab(tab);
+  };
+
   // Checked candidates for student raffle event
   const [raffleCandidateIds, setRaffleCandidateIds] = useState<string[]>([
     'opt_1',
@@ -198,7 +207,8 @@ export default function App() {
       <div className="no-print h-full shrink-0">
         <Sidebar
           activeTab={activeTab}
-          setActiveTab={setActiveTab}
+          setActiveTab={handleSetActiveTab}
+          hasStudents={students.length > 0}
           perspective={perspective}
           setPerspective={setPerspective}
           onOpenHistory={() => setIsHistoryOpen(true)}
@@ -222,7 +232,7 @@ export default function App() {
               setDimensions={setDimensions}
               setLayoutType={setLayoutType}
               onSaveToHistory={(res) => setSavedResults((prev) => [res, ...prev])}
-              onProceedToLayout={() => setActiveTab('layout')}
+              onProceedToLayout={() => handleSetActiveTab('layout')}
               onOpenCraGuide={() => setIsCraGuideOpen(true)}
             />
           )}

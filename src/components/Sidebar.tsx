@@ -21,6 +21,7 @@ import { ViewPerspective } from '../types';
 interface SidebarProps {
   activeTab: 'cra' | 'layout' | 'constraints' | 'result' | 'raffleAndVote';
   setActiveTab: (tab: 'cra' | 'layout' | 'constraints' | 'result' | 'raffleAndVote') => void;
+  hasStudents: boolean;
   perspective: ViewPerspective;
   setPerspective: (p: ViewPerspective) => void;
   onOpenHistory: () => void;
@@ -33,6 +34,7 @@ interface SidebarProps {
 export const Sidebar: React.FC<SidebarProps> = ({
   activeTab,
   setActiveTab,
+  hasStudents,
   perspective,
   setPerspective,
   onOpenHistory,
@@ -57,18 +59,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
       label: '2. 책상 배치 설정',
       subLabel: '통로/공백 배치 및 저장',
       icon: LayoutGrid,
+      requiresStudents: true,
     },
     {
       id: 'constraints' as const,
       label: '3. 제약조건 & 알고리즘 설정',
       subLabel: '시각적 자리 고정·이전짝',
       icon: SlidersHorizontal,
+      requiresStudents: true,
     },
     {
       id: 'result' as const,
       label: '4. 자리배치 결과 확인 & 변경',
       subLabel: '5대 후보비교·수동 배치 편집',
       icon: Sparkles,
+      requiresStudents: true,
     },
   ];
 
@@ -146,24 +151,35 @@ export const Sidebar: React.FC<SidebarProps> = ({
               teacherItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = activeTab === item.id;
+                const isLocked = item.requiresStudents && !hasStudents;
 
                 return (
                   <button
                     key={item.id}
-                    onClick={() => setActiveTab(item.id)}
-                    className={`w-full flex items-center gap-3 p-3 rounded-2xl text-left transition-all cursor-pointer ${
-                      isActive
-                        ? 'bg-indigo-600 text-white font-bold shadow-lg shadow-indigo-600/30'
-                        : 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-200'
+                    disabled={isLocked}
+                    onClick={() => !isLocked && setActiveTab(item.id)}
+                    className={`w-full flex items-center gap-3 p-3 rounded-2xl text-left transition-all ${
+                      isLocked
+                        ? 'text-slate-600 opacity-50 cursor-not-allowed'
+                        : isActive
+                        ? 'bg-indigo-600 text-white font-bold shadow-lg shadow-indigo-600/30 cursor-pointer'
+                        : 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-200 cursor-pointer'
                     }`}
-                    title={isCollapsed ? item.label : undefined}
+                    title={
+                      isLocked
+                        ? '먼저 1단계에서 학생 데이터를 등록해 주세요 (샘플 데이터 또는 실제 명단 업로드)'
+                        : isCollapsed
+                        ? item.label
+                        : undefined
+                    }
                   >
                     <Icon
-                      className={`w-5 h-5 shrink-0 ${isActive ? 'text-white' : 'text-slate-400'}`}
+                      className={`w-5 h-5 shrink-0 ${isActive && !isLocked ? 'text-white' : 'text-slate-400'}`}
                     />
                     {!isCollapsed && (
-                      <div className="overflow-hidden">
+                      <div className="overflow-hidden flex items-center gap-1.5">
                         <div className="text-xs font-bold truncate">{item.label}</div>
+                        {isLocked && <span className="text-[10px] shrink-0">🔒</span>}
                       </div>
                     )}
                   </button>

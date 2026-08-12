@@ -788,6 +788,17 @@ export const ConstraintSetup: React.FC<ConstraintSetupProps> = ({
               </div>
             );
           })()}
+
+          {/* Bottom Generate Button (duplicate of the top button for convenience after scrolling) */}
+          <div className="flex justify-center pt-2">
+            <button
+              onClick={onGenerateCandidates}
+              className="flex items-center gap-2 px-6 py-3.5 text-sm font-black text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 rounded-2xl shadow-xl shadow-indigo-200 transition-all cursor-pointer"
+            >
+              <Sparkles className="w-5 h-5 text-amber-300 animate-spin" />
+              <span>자리후보 생성하기</span>
+            </button>
+          </div>
       </div>
 
       {/* Algo Explanation Modal */}
