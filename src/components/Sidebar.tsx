@@ -12,7 +12,6 @@ import {
   ChevronDown,
   ChevronUp,
   ShieldCheck,
-  Laptop,
   Info,
   Network,
 } from 'lucide-react';
@@ -263,12 +262,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
                 <span>개인정보보호 완벽 보장</span>
               </div>
+              <div className="text-[10px] text-emerald-500/80 font-semibold -mt-1">
+                (개인 Local Device 전용 동작)
+              </div>
               <button
                 onClick={onOpenOfflineGuide}
                 className="w-full py-2 px-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-black flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-md shadow-emerald-950/40"
               >
-                <Laptop className="w-4 h-4" />
-                <span>오프라인 .EXE 실행 가이드</span>
+                <ShieldCheck className="w-4 h-4" />
+                <span>개인정보보호 안내 보기</span>
               </button>
             </div>
 
@@ -286,9 +288,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <button
               onClick={onOpenOfflineGuide}
               className="p-2 rounded-xl bg-emerald-950/80 text-emerald-400 hover:bg-emerald-900 flex justify-center cursor-pointer"
-              title="오프라인 .EXE 실행 가이드"
+              title="개인정보보호 안내 보기"
             >
-              <Laptop className="w-4 h-4" />
+              <ShieldCheck className="w-4 h-4" />
             </button>
             <button
               onClick={onOpenSystemInfo}

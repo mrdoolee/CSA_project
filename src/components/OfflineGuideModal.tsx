@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Laptop, X, ShieldCheck, Copy, Check } from 'lucide-react';
+import { X, ShieldCheck, Copy, Check } from 'lucide-react';
 
 interface OfflineGuideModalProps {
   isOpen: boolean;
@@ -34,14 +34,14 @@ pause`;
         <div className="bg-slate-950 text-white p-5 flex items-center justify-between border-b border-slate-800">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-2xl bg-indigo-600 flex items-center justify-center text-white shadow-md">
-              <Laptop className="w-5 h-5" />
+              <ShieldCheck className="w-5 h-5" />
             </div>
             <div>
               <h2 className="text-lg font-black tracking-tight">
-                개인 PC 오프라인 실행 파일 (.exe) 패키징 가이드
+                개인정보보호 동작 원리
               </h2>
               <p className="text-xs text-slate-400">
-                학생 개인정보 유출 방지를 위한 로컬 실행 가이드
+                학생 개인정보가 외부로 유출되지 않는 이유
               </p>
             </div>
           </div>
@@ -101,7 +101,7 @@ pause`;
                     <strong className="font-extrabold text-emerald-950">
                       • Local In-Memory Processing:
                     </strong>{' '}
-                    선생님께서 입력/업로드하신 학생 이름 명단, 시력/자리 고정, 같이/따로 앉기 및 제약조건 데이터는 오직 선생님 교사 PC의 브라우저 메모리(RAM) 내부에서만 분석됩니다.
+                    선생님께서 업로드하신 학생 기본명단·CRA 관계분석 시트(CSV/XLSX), 이전 자리배치 백업(JSON) 파일과 자리 고정·같이/따로 앉기 등 제약조건 데이터는 오직 선생님 교사 PC의 브라우저 메모리(RAM) 내부에서만 분석됩니다.
                   </li>
                   <li>
                     <strong className="font-extrabold text-emerald-950">
