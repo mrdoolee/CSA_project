@@ -40,6 +40,7 @@ export const HistoryModal: React.FC<HistoryModalProps> = ({
             assignments: parsed.assignments,
             desks: parsed.desks,
             dimensions: parsed.dimensions,
+            studentRoster: parsed.studentRoster,
             metrics: parsed.metrics || {
               expansionScore: 90,
               intimacyDispersionScore: 90,

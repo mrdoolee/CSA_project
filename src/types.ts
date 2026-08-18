@@ -100,8 +100,10 @@ export interface SeatingResult {
   desks?: DeskPosition[];
   dimensions?: GridDimensions;
   // Snapshot of students referenced in `assignments`, so backups can be restored
-  // by name/studentNumber even after student IDs are regenerated in a later session.
-  studentRoster?: { id: string; name: string; studentNumber?: string }[];
+  // by name/studentNumber even after student IDs are regenerated in a later session,
+  // and so the seating chart can be displayed straight from the file with no student
+  // roster loaded at all.
+  studentRoster?: { id: string; name: string; studentNumber?: string; gender?: Gender }[];
   metrics: {
     expansionScore: number; // 0~100
     intimacyDispersionScore: number; // 0~100

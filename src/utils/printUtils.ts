@@ -1,5 +1,5 @@
 import { SeatingResult, CraStudent, DeskPosition, GridDimensions, ViewPerspective } from '../types';
-import { resolveAssignmentsToCurrentStudents } from './seatingRestore';
+import { resolveDisplayAssignments } from './seatingRestore';
 
 export function printSeatingChart(options: {
   title: string;
@@ -22,8 +22,9 @@ export function printSeatingChart(options: {
     listPosition = 'none',
   } = options;
 
-  const studentMap = new Map<string, CraStudent>(students.map((s) => [s.id, s]));
-  const resolvedAssignments = resolveAssignmentsToCurrentStudents(result, students).assignments;
+  const resolution = resolveDisplayAssignments(result, students);
+  const studentMap = resolution.studentMap;
+  const resolvedAssignments = resolution.assignments;
   const effectiveDesks = result.desks && result.desks.length > 0 ? result.desks : defaultDesks;
   const effectiveDimensions = result.dimensions || defaultDimensions;
 

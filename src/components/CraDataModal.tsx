@@ -165,7 +165,7 @@ export const CraDataModal: React.FC<CraDataModalProps> = ({
               // history entry keeps restoring correctly even after a future reload changes IDs again.
               studentRoster: students
                 .filter((s) => Object.values(assignments).includes(s.id))
-                .map((s) => ({ id: s.id, name: s.name, studentNumber: s.studentNumber })),
+                .map((s) => ({ id: s.id, name: s.name, studentNumber: s.studentNumber, gender: s.gender })),
               metrics: jsonResult.metrics || {
                 expansionScore: 90,
                 intimacyDispersionScore: 90,

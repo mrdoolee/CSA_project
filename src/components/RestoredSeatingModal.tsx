@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { SeatingResult, CraStudent, DeskPosition, GridDimensions, ViewPerspective } from '../types';
 import { X, Printer, ArrowLeftRight, Calendar, FileText, Edit3 } from 'lucide-react';
 import { printSeatingChart } from '../utils/printUtils';
-import { resolveAssignmentsToCurrentStudents } from '../utils/seatingRestore';
+import { resolveDisplayAssignments } from '../utils/seatingRestore';
 
 interface RestoredSeatingModalProps {
   isOpen: boolean;
@@ -28,13 +28,13 @@ export const RestoredSeatingModal: React.FC<RestoredSeatingModalProps> = ({
   );
 
   const resolution = useMemo(
-    () => (result ? resolveAssignmentsToCurrentStudents(result, students) : null),
+    () => (result ? resolveDisplayAssignments(result, students) : null),
     [result, students]
   );
 
   if (!isOpen || !result) return null;
 
-  const studentMap = new Map<string, CraStudent>(students.map((s) => [s.id, s]));
+  const studentMap = resolution!.studentMap;
   const resolvedAssignments = resolution!.assignments;
   const effectiveDesks = result.desks && result.desks.length > 0 ? result.desks : defaultDesks;
   const effectiveDimensions = result.dimensions || defaultDimensions;
@@ -162,13 +162,16 @@ export const RestoredSeatingModal: React.FC<RestoredSeatingModalProps> = ({
 
         {/* Content Body */}
         <div className="flex-1 overflow-y-auto space-y-6 pr-1 print:overflow-visible print:pr-0">
-          {/* Unmatched-seat warning - Hidden in Print */}
+          {/* Snapshot-only / unmatched-seat notices - Hidden in Print */}
+          {resolution && resolution.matchedFromSnapshotOnly > 0 && (
+            <div className="p-4 bg-indigo-50 border border-indigo-200 rounded-2xl text-xs font-bold text-indigo-800 no-print">
+              ℹ️ {resolution.matchedFromSnapshotOnly}자리는 현재 불러온 학생 명단이 아니라 백업 파일에 저장된 이름으로 표시됩니다.
+              이 학생들에게 CRA 알고리즘(이전 짝꿍 회피 등)을 적용하려면 1단계에서 동일한 학생 명단을 불러와 주세요.
+            </div>
+          )}
           {resolution && resolution.unmatched > 0 && (
             <div className="p-4 bg-amber-50 border border-amber-200 rounded-2xl text-xs font-bold text-amber-800 no-print">
-              ⚠️ {resolution.unmatched}자리를 현재 학생 명단과 매칭하지 못해 빈 자석으로 표시됩니다.
-              {students.length === 0
-                ? ' 먼저 1단계에서 학생 명단(기본명단 업로드 또는 25명 샘플 데이터)을 불러온 뒤 이 배치를 다시 확인해 주세요.'
-                : ' 백업 파일의 학생 이름/학번이 현재 불러온 명단과 일치하는지 확인해 주세요.'}
+              ⚠️ {resolution.unmatched}자리는 백업 파일에 이름 정보가 없어 표시할 수 없습니다 (이름 정보가 없는 예전 형식 백업이거나, 현재 명단과도 일치하지 않음).
             </div>
           )}
           {/* Metrics summary - Hidden in Print */}
@@ -252,7 +255,7 @@ export const RestoredSeatingModal: React.FC<RestoredSeatingModalProps> = ({
                                   <span>
                                     {student?.studentNumber ? `${student.studentNumber}` : `${r + 1}-${c + 1}`}
                                   </span>
-                                  {student && (
+                                  {student && student.gender && (
                                     <span
                                       className={`w-2 h-2 rounded-full print:border print:border-slate-400 ${
                                         student.gender === 'M' ? 'bg-blue-400 print:bg-blue-600' : 'bg-pink-400 print:bg-pink-600'

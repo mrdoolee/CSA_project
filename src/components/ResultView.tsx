@@ -136,7 +136,7 @@ export const ResultView: React.FC<ResultViewProps> = ({
     const referencedIds = new Set(Object.values(assignments).filter(Boolean) as string[]);
     return students
       .filter((s) => referencedIds.has(s.id))
-      .map((s) => ({ id: s.id, name: s.name, studentNumber: s.studentNumber }));
+      .map((s) => ({ id: s.id, name: s.name, studentNumber: s.studentNumber, gender: s.gender }));
   };
 
   // Export JSON Backup file containing layout & student assignments
