@@ -1,4 +1,5 @@
 import { SeatingResult, CraStudent, DeskPosition, GridDimensions, ViewPerspective } from '../types';
+import { resolveAssignmentsToCurrentStudents } from './seatingRestore';
 
 export function printSeatingChart(options: {
   title: string;
@@ -22,6 +23,7 @@ export function printSeatingChart(options: {
   } = options;
 
   const studentMap = new Map<string, CraStudent>(students.map((s) => [s.id, s]));
+  const resolvedAssignments = resolveAssignmentsToCurrentStudents(result, students).assignments;
   const effectiveDesks = result.desks && result.desks.length > 0 ? result.desks : defaultDesks;
   const effectiveDimensions = result.dimensions || defaultDimensions;
 
@@ -46,7 +48,7 @@ export function printSeatingChart(options: {
       if (!desk || desk.disabled) {
         rowCellsHtml += `<div class="desk empty">빈 통로</div>`;
       } else {
-        const studentId = result.assignments[desk.id];
+        const studentId = resolvedAssignments[desk.id];
         const student = studentId ? studentMap.get(studentId) : null;
 
         if (student) {

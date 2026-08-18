@@ -99,6 +99,9 @@ export interface SeatingResult {
   assignments: Record<string, string | null>;
   desks?: DeskPosition[];
   dimensions?: GridDimensions;
+  // Snapshot of students referenced in `assignments`, so backups can be restored
+  // by name/studentNumber even after student IDs are regenerated in a later session.
+  studentRoster?: { id: string; name: string; studentNumber?: string }[];
   metrics: {
     expansionScore: number; // 0~100
     intimacyDispersionScore: number; // 0~100

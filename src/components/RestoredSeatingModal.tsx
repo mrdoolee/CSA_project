@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { SeatingResult, CraStudent, DeskPosition, GridDimensions, ViewPerspective } from '../types';
 import { X, Printer, ArrowLeftRight, Calendar, FileText, Edit3 } from 'lucide-react';
 import { printSeatingChart } from '../utils/printUtils';
+import { resolveAssignmentsToCurrentStudents } from '../utils/seatingRestore';
 
 interface RestoredSeatingModalProps {
   isOpen: boolean;
@@ -26,9 +27,15 @@ export const RestoredSeatingModal: React.FC<RestoredSeatingModalProps> = ({
     '서로 존중하고 다정하게 대화하는 즐거운 교실 환경을 만듭니다.'
   );
 
+  const resolution = useMemo(
+    () => (result ? resolveAssignmentsToCurrentStudents(result, students) : null),
+    [result, students]
+  );
+
   if (!isOpen || !result) return null;
 
   const studentMap = new Map<string, CraStudent>(students.map((s) => [s.id, s]));
+  const resolvedAssignments = resolution!.assignments;
   const effectiveDesks = result.desks && result.desks.length > 0 ? result.desks : defaultDesks;
   const effectiveDimensions = result.dimensions || defaultDimensions;
 
@@ -220,7 +227,7 @@ export const RestoredSeatingModal: React.FC<RestoredSeatingModalProps> = ({
                             );
                           }
 
-                          const studentId = result.assignments[desk.id];
+                          const studentId = resolvedAssignments[desk.id];
                           const student = studentId ? studentMap.get(studentId) : null;
 
                           return (
