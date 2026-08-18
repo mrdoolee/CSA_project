@@ -31,10 +31,16 @@ export function printSeatingChart(options: {
   const rows = effectiveDimensions.rows;
   const cols = effectiveDimensions.cols;
 
+  // Teacher perspective is a 180° turn-around: both which row is nearest (front-back) and
+  // which side is which (left-right) invert, so columns must mirror alongside rows.
   const rowIndices =
     perspective === 'student'
       ? Array.from({ length: rows }, (_, i) => i)
       : Array.from({ length: rows }, (_, i) => rows - 1 - i);
+  const colIndices =
+    perspective === 'student'
+      ? Array.from({ length: cols }, (_, i) => i)
+      : Array.from({ length: cols }, (_, i) => cols - 1 - i);
 
   let gridHtml = '';
 
@@ -47,8 +53,11 @@ export function printSeatingChart(options: {
         : effectiveDimensions.rowAisles?.includes(r);
     let rowCellsHtml = '';
 
-    for (let c = 0; c < cols; c++) {
-      const hasColAisle = effectiveDimensions.colAisles?.includes(c);
+    for (const c of colIndices) {
+      const hasColAisle =
+        perspective === 'teacher'
+          ? effectiveDimensions.colAisles?.includes(c - 1)
+          : effectiveDimensions.colAisles?.includes(c);
       const desk = effectiveDesks.find((d) => d.row === r && d.col === c);
 
       if (!desk || desk.disabled) {
