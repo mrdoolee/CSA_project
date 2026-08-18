@@ -39,7 +39,12 @@ export function printSeatingChart(options: {
   let gridHtml = '';
 
   rowIndices.forEach((r) => {
-    const hasRowAisle = effectiveDimensions.rowAisles?.includes(r);
+    // Flip the aisle lookup key too when teacher perspective reverses the row order,
+    // otherwise the gap renders one row-band off from where it should.
+    const hasRowAisle =
+      perspective === 'teacher'
+        ? effectiveDimensions.rowAisles?.includes(r - 1)
+        : effectiveDimensions.rowAisles?.includes(r);
     let rowCellsHtml = '';
 
     for (let c = 0; c < cols; c++) {
