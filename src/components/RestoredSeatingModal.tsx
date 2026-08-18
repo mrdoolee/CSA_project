@@ -162,6 +162,15 @@ export const RestoredSeatingModal: React.FC<RestoredSeatingModalProps> = ({
 
         {/* Content Body */}
         <div className="flex-1 overflow-y-auto space-y-6 pr-1 print:overflow-visible print:pr-0">
+          {/* Unmatched-seat warning - Hidden in Print */}
+          {resolution && resolution.unmatched > 0 && (
+            <div className="p-4 bg-amber-50 border border-amber-200 rounded-2xl text-xs font-bold text-amber-800 no-print">
+              ⚠️ {resolution.unmatched}자리를 현재 학생 명단과 매칭하지 못해 빈 자석으로 표시됩니다.
+              {students.length === 0
+                ? ' 먼저 1단계에서 학생 명단(기본명단 업로드 또는 25명 샘플 데이터)을 불러온 뒤 이 배치를 다시 확인해 주세요.'
+                : ' 백업 파일의 학생 이름/학번이 현재 불러온 명단과 일치하는지 확인해 주세요.'}
+            </div>
+          )}
           {/* Metrics summary - Hidden in Print */}
           <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl grid grid-cols-2 sm:grid-cols-4 gap-3 text-center no-print">
             <div className="bg-white p-2.5 rounded-xl border border-slate-200 shadow-xs">
